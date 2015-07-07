@@ -1,0 +1,135 @@
+
+
+<report xmlns="http://developer.cognos.com/schemas/report/6.0/" expressionLocale="en" ignoreFilterContext="false"><!--RSU-SPC-0093 The report specification was upgraded from &amp;amp;amp;amp;amp;amp;quot;http://developer.cognos.com/schemas/report/4.0/&amp;amp;amp;amp;amp;amp;quot; to &amp;amp;amp;amp;amp;amp;quot;http://developer.cognos.com/schemas/report/6.0/&amp;amp;amp;amp;amp;amp;quot; at 2014-7-14. 15:40:37-->
+				
+				<queries>
+					
+				<query name="INR">
+			<source>
+				<model/>
+			</source>
+			<selection><dataItem name="Result Date" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Result Date]</expression></dataItem><dataItem name="Patient ID" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Patient ID]</expression></dataItem><dataItem name="Lab Attribute" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Lab Attribute]</expression></dataItem><dataItem name="Lab Attribute Value" aggregate="none" rollupAggregate="none"><expression>[Lab Analysis with Alias].[Lab Analysis with Alias].[Lab Attribute Value]</expression></dataItem></selection>
+		<detailFilters><detailFilter use="required" postAutoAggregation="false"><filterExpression>[Lab Attribute] contains 'INR'</filterExpression></detailFilter><detailFilter use="required" postAutoAggregation="false"><filterExpression>[Result Date] between _add_days (current_date, -90) and current_date </filterExpression></detailFilter><detailFilter use="required" postAutoAggregation="false"><filterExpression>[Problem List].[Problem List Analysis].[Assessment Code] contains 'v58.61' OR lower([Prescribed Items].[Prescribed Items].[Drug Name])  contains 'warfarin'</filterExpression></detailFilter><detailFilter use="prohibited" postAutoAggregation="false"><filterExpression>([EMR Reporting].[Demographics PCP].[Demographics PCP Address Line 1] contains '1125' AND [EMR Reporting].[Demographics PCP].[Demographics PCP Address Line 1] contains 'Topeka')</filterExpression></detailFilter></detailFilters></query></queries>
+				<layouts>
+					<layout>
+						<reportPages>
+							<page name="Page1"><style><defaultStyles><defaultStyle refStyle="pg"/></defaultStyles></style>
+								<pageBody><style><defaultStyles><defaultStyle refStyle="pb"/></defaultStyles><CSS value="text-align:center"/></style>
+									<contents>
+										<block>
+			<contents><table><style><defaultStyles><defaultStyle refStyle="tb"/></defaultStyles><CSS value="border-collapse:collapse;width:100%"/></style><tableRows><tableRow><tableCells><tableCell><contents><textItem><dataSource><staticValue> * Considers patients with INR &lt; 90 days and "[Problem List].[Problem List Analysis].[Assessment Code] contains 'v58.61'"</staticValue></dataSource></textItem></contents></tableCell><tableCell><contents/></tableCell></tableCells></tableRow></tableRows></table></contents>
+		<style><CSS value="padding-bottom:5px;background-color:silver"/></style></block>
+									<list horizontalPagination="true" name="List1" refQuery="INR">
+			
+			
+			
+			<style>
+				<CSS value="border-collapse:collapse"/>
+				<defaultStyles>
+					<defaultStyle refStyle="ls"/>
+				</defaultStyles>
+			</style>
+		<listColumns><listColumn><listColumnTitle><style><defaultStyles><defaultStyle refStyle="lt"/></defaultStyles></style><contents><textItem><dataSource><dataItemLabel refDataItem="Patient ID"/></dataSource></textItem></contents></listColumnTitle><listColumnBody><style><defaultStyles><defaultStyle refStyle="lc"/></defaultStyles></style><contents><textItem><dataSource><dataItemValue refDataItem="Patient ID"/></dataSource></textItem></contents></listColumnBody></listColumn><listColumn><listColumnTitle><style><defaultStyles><defaultStyle refStyle="lt"/></defaultStyles></style><contents><textItem><dataSource><dataItemLabel refDataItem="Result Date"/></dataSource></textItem></contents></listColumnTitle><listColumnBody><style><defaultStyles><defaultStyle refStyle="lc"/></defaultStyles></style><contents><textItem><dataSource><dataItemValue refDataItem="Result Date"/></dataSource></textItem></contents></listColumnBody></listColumn><listColumn><listColumnTitle><style><defaultStyles><defaultStyle refStyle="lt"/></defaultStyles></style><contents><textItem><dataSource><dataItemLabel refDataItem="Lab Attribute Value"/></dataSource></textItem></contents></listColumnTitle><listColumnBody><style><defaultStyles><defaultStyle refStyle="lc"/></defaultStyles></style><contents><textItem><dataSource><dataItemValue refDataItem="Lab Attribute Value"/></dataSource></textItem></contents></listColumnBody></listColumn></listColumns></list></contents>
+								</pageBody>
+								<pageHeader>
+									<contents>
+										<block><style><defaultStyles><defaultStyle refStyle="ta"/></defaultStyles><CSS value="background-color:#336699;color:white;font-family:Georgia;font-size:14pt"/></style>
+											<contents>
+												<textItem><style><defaultStyles><defaultStyle refStyle="tt"/></defaultStyles><CSS value="text-decoration:none;font-family:'Times New Roman';font-size:16pt"/></style>
+													<dataSource>
+														<staticValue>Patients on Warfarin with no INR taken in past 30 days </staticValue>
+													</dataSource>
+												</textItem>
+											</contents>
+										</block>
+									</contents>
+									<style>
+										<defaultStyles>
+											<defaultStyle refStyle="ph"/>
+										</defaultStyles>
+										<CSS value="padding-bottom:5px"/>
+									</style>
+								</pageHeader>
+								<pageFooter>
+									<contents>
+										<table>
+											<tableRows>
+												<tableRow>
+													<tableCells>
+														<tableCell>
+															<contents>
+																<date>
+																	<style>
+																		<dataFormat>
+																			<dateFormat/>
+																		</dataFormat>
+																	</style>
+																</date>
+															</contents>
+															<style>
+																<CSS value="vertical-align:top;text-align:left;width:25%"/>
+															</style>
+														</tableCell>
+														<tableCell>
+															<contents>
+																<pageNumber/>
+															</contents>
+															<style>
+																<CSS value="vertical-align:top;text-align:center;width:50%"/>
+															</style>
+														</tableCell>
+														<tableCell>
+															<contents>
+																<time>
+																	<style>
+																		<dataFormat>
+																			<timeFormat/>
+																		</dataFormat>
+																	</style>
+																</time>
+															</contents>
+															<style>
+																<CSS value="vertical-align:top;text-align:right;width:25%"/>
+															</style>
+														</tableCell>
+													</tableCells>
+												</tableRow>
+											</tableRows>
+											<style>
+												<defaultStyles>
+													<defaultStyle refStyle="tb"/>
+												</defaultStyles>
+												<CSS value="border-collapse:collapse;width:100%"/>
+											</style>
+										</table>
+									</contents>
+									<style>
+										<defaultStyles>
+											<defaultStyle refStyle="pf"/>
+										</defaultStyles>
+										<CSS value="padding-top:3px"/>
+									</style>
+								</pageFooter>
+							</page>
+						</reportPages>
+					</layout>
+				</layouts>
+				<classStyles>
+					<classStyle name="pd_1">
+						<CSS value="background-color:#009933; color:#FFFFFF;"/>
+					</classStyle>
+					<classStyle name="pd_2">
+						<CSS value="background-color:#FFFFFF; color:#009933;"/>
+					</classStyle>
+					<classStyle name="pd_3">
+						<CSS value="background-color:#FFFFFF; color:#CC9900;"/>
+					</classStyle>
+					<classStyle name="pd_4">
+						<CSS value="background-color:#FFFFFF; color:#990000;"/>
+					</classStyle>
+					<classStyle name="pd_5">
+						<CSS value="background-color:#990000; color:#FFFFFF;"/>
+					</classStyle>
+				</classStyles>
+			<XMLAttributes><XMLAttribute name="RS_CreateExtendedDataItems" output="no" value="true"/><XMLAttribute name="listSeparator" output="no" value=","/></XMLAttributes><modelPath>/content/package[@name='eCWEBO']/model[@name='model']</modelPath></report>
+
