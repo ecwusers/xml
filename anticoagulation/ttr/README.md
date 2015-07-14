@@ -10,4 +10,6 @@ After exporting this report, de-identify it with the Visual Basic macro in Acces
 
 Enhancements needed
 --------------------
-Deidentify the file during running on the EBO server so the Microsoft Access file is not needed. See issue #1.
+Deidentify the file during running on the EBO server so the Microsoft Access file is not needed. See issue #1
+
+See [all issues for this file](https://github.com/issues?utf8=%E2%9C%93&q=is%3Aissue+user%3Aecwusers+ttr+) (eg 'ttr' is in the text of the issue).
