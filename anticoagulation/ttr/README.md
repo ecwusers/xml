@@ -8,6 +8,8 @@ The mean TTR in randomized control trials is 56% ( PMID [23049730](http://pubmed
 
 Using this report
 -----------------
+The report currently has a filter for one of our practice's addresses. You can delete or edit that as needed.
+
 After exporting this report, you may need to remove '>' symbols from your INR values.
 
 Questions
