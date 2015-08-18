@@ -1,0 +1,332 @@
+<report xmlns="http://developer.cognos.com/schemas/report/6.0/" expressionLocale="en" ignoreFilterContext="false"><!--RSU-SPC-0093 The report specification was upgraded from &amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;quot;http://developer.cognos.com/schemas/report/4.0/&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;quot; to &amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;quot;http://developer.cognos.com/schemas/report/6.0/&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;quot; at 2015-1-27. 11:7:58-->
+				
+				<queries>
+					<query name="Patients with Upcoming Appts">
+						<source>
+							<model/>
+						</source>
+						<selection><dataItem name="Appointment Start Time" aggregate="none" rollupAggregate="none"><expression>[EMR Reporting].[Appointments].[Appointment Start Time]</expression></dataItem><dataItem name="Appointment Date" aggregate="none" rollupAggregate="none"><expression>[EMR Reporting].[Appointments].[Appointment Date]</expression></dataItem><dataItem name="Encounter ID" aggregate="none" rollupAggregate="none"><expression>[EMR Reporting].[Appointments].[Encounter ID]</expression></dataItem><dataItem name="Visit Status" aggregate="none" rollupAggregate="none"><expression>[EMR Reporting].[Appointments].[Visit Status]</expression></dataItem><dataItem name="Visit Type" aggregate="none" rollupAggregate="none"><expression>[EMR Reporting].[Appointments].[Visit Type]</expression></dataItem><dataItem name="Encounter Type" aggregate="none" rollupAggregate="none"><expression>[EMR Reporting].[Appointments].[Encounter Type]</expression></dataItem><dataItem name="Patient Account Number" aggregate="none" rollupAggregate="none"><expression>[EMR Reporting].[Patients].[Patient Account Number]</expression></dataItem><dataItem name="Demographics PCP Address Line 1" aggregate="none" rollupAggregate="none"><expression>[EMR Reporting].[Demographics PCP].[Demographics PCP Address Line 1]</expression></dataItem><dataItem name="Patient Age" aggregate="none" rollupAggregate="none"><expression>[EMR Reporting].[Patients].[Patient Age]</expression></dataItem><dataItem name="Patient Name" aggregate="none" rollupAggregate="none"><expression>[EMR Reporting].[Patients].[Patient Name]</expression></dataItem><dataItem name="Patient ID" aggregate="none" rollupAggregate="none"><expression>[EMR Reporting].[Patients].[Patient ID]</expression></dataItem><dataItem name="Facility Name" aggregate="none" rollupAggregate="none"><expression>[EMR Reporting].[Appointment Facilities].[Facility Name]</expression></dataItem><dataItem name="Appointment Provider Name" aggregate="none" rollupAggregate="none"><expression>[EMR Reporting].[Appointment Providers].[Appointment Provider Name]</expression></dataItem><dataItem name="Demographics PCP Name" aggregate="none" rollupAggregate="none"><expression>[EMR Reporting].[Demographics PCP].[Demographics PCP Name]</expression></dataItem><dataItem name="Demographics PCP ID" aggregate="none" rollupAggregate="none"><expression>[EMR Reporting].[Demographics PCP].[Demographics PCP ID]</expression></dataItem></selection>
+					<detailFilters><detailFilter><filterExpression>[Encounter Type] = 1</filterExpression></detailFilter><detailFilter use="required" postAutoAggregation="false"><filterExpression>[Appointment Date] &gt;= current_date </filterExpression></detailFilter><detailFilter use="required" postAutoAggregation="false"><filterExpression>[Visit Status] not in ('Rescheduled','Canceled')</filterExpression></detailFilter><detailFilter use="prohibited"><filterExpression>[Appointment Date] between ?ApptStart? and ?ApptEnd?</filterExpression></detailFilter><detailFilter use="prohibited" postAutoAggregation="false"><filterExpression>[Appointment Date] = current_date</filterExpression></detailFilter></detailFilters></query>
+				<query name="Labs-hyperglycemia">
+			<source>
+				<model/>
+			</source>
+			<selection><dataItem name="Lab Name" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Lab Name]</expression></dataItem><dataItem name="Lab Attribute" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Lab Attribute]</expression></dataItem><dataItem name="Lab Attribute Value" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Lab Attribute Value]</expression></dataItem><dataItem name="Lab Result" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Lab Result]</expression></dataItem><dataItem name="Patient Account Number" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Patient Account Number]</expression></dataItem><dataItem name="Encounter Date" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Encounter Date]</expression></dataItem><dataItem name="Result Date" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Result Date]</expression></dataItem><dataItem name="Patient ID" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Patient ID]</expression></dataItem></selection>
+		<detailFilters><detailFilter use="required" postAutoAggregation="false"><filterExpression>[Lab Attribute] in ( 'Blood Glucose','Glucose, Serum')</filterExpression></detailFilter><detailFilter use="prohibited" postAutoAggregation="false"><filterExpression>maximum ([Result Date] for [Patient ID]) = [Result Date]</filterExpression></detailFilter><detailFilter><filterExpression>[Result Date] between _add_months (current_date, -6) and current_date</filterExpression></detailFilter><detailFilter use="prohibited" postAutoAggregation="false"><filterExpression>cast([Lab Attribute Value],FLOAT) &gt; 99</filterExpression></detailFilter></detailFilters></query><query name="Active problems">
+			<source>
+				
+			<sqlQuery name="SQL1" dataSource="eClinicalWorks">
+			<sqlText>select pl.patientid, pl.asmtid as 'Assessment Code', pl.WUStatus, pl.inactiveflag as Inactive, pl.condition as ClinicalStatus , i.itemname as 'Assessment Name'
+from problemlist pl 
+inner join items i on i.itemid=pl.asmtid
+inner join itemdetail id on id.itemid=pl.asmtid
+where pl.deleteflag=0 and pl.inactiveflag=0</sqlText>
+		<mdProjectedItems><mdProjectedItem name="patientid"/><mdProjectedItem name="Assessment Code"/><mdProjectedItem name="WUStatus"/><mdProjectedItem name="Inactive"/><mdProjectedItem name="ClinicalStatus"/><mdProjectedItem name="Assessment Name"/></mdProjectedItems></sqlQuery></source>
+			<selection><dataItem name="Patient ID"><expression>[SQL1].[patientid]</expression></dataItem><dataItem name="Assessment Code"><expression>[SQL1].[Assessment Code]</expression></dataItem><dataItem name="Assessment Name"><expression>[SQL1].[Assessment Name]</expression></dataItem><dataItem name="ClinicalStatus"><expression>[SQL1].[ClinicalStatus]</expression></dataItem><dataItem name="Inactive"><expression>[SQL1].[Inactive]</expression></dataItem><dataItem name="WUStatus"><expression>[SQL1].[WUStatus]</expression></dataItem></selection>
+		<detailFilters><detailFilter><filterExpression>[Assessment Name] in ('prediabetes', 'glucose','glycemia') </filterExpression></detailFilter></detailFilters></query><query name="All Patients with Upcoming Appts">
+			<source>
+				
+			<joinOperation>
+			<joinOperands>
+				<joinOperand cardinality="1:1"><queryRef refQuery="Active problems"/></joinOperand>
+				<joinOperand cardinality="1:1"><queryRef refQuery="Patients with Upcoming Appts"/></joinOperand>
+			</joinOperands>
+			<joinFilter>
+				<filterExpression>[Active problems].[Patient ID] = [Patients with Upcoming Appts].[Patient ID]</filterExpression>
+			</joinFilter>
+		</joinOperation></source>
+			<selection><dataItem name="Patient Name"><expression>[Patients with Upcoming Appts].[Patient Name]</expression></dataItem><dataItem name="Patient Account Number"><expression>[Patients with Upcoming Appts].[Patient Account Number]</expression></dataItem><dataItem name="Assessment Name"><expression>[Active problems].[Assessment Name]</expression></dataItem><dataItem name="Assessment Code"><expression>[Active problems].[Assessment Code]</expression></dataItem><dataItem name="Inactive"><expression>[Active problems].[Inactive]</expression></dataItem><dataItem name="ClinicalStatus"><expression>[Active problems].[ClinicalStatus]</expression></dataItem><dataItem name="WUStatus"><expression>[Active problems].[WUStatus]</expression></dataItem><dataItem name="Appointment Date"><expression>[Patients with Upcoming Appts].[Appointment Date]</expression></dataItem><dataItem name="Encounter ID"><expression>[Patients with Upcoming Appts].[Encounter ID]</expression></dataItem><dataItem name="Facility Name"><expression>[Patients with Upcoming Appts].[Facility Name]</expression></dataItem><dataItem name="Visit Status"><expression>[Patients with Upcoming Appts].[Visit Status]</expression></dataItem><dataItem name="Visit Type"><expression>[Patients with Upcoming Appts].[Visit Type]</expression></dataItem><dataItem name="Encounter Type"><expression>[Patients with Upcoming Appts].[Encounter Type]</expression></dataItem><dataItem name="Patient ID_Upcoming Appts"><expression>[Patients with Upcoming Appts].[Patient ID]</expression></dataItem><dataItem name="Demographics PCP Name"><expression>[Patients with Upcoming Appts].[Demographics PCP Name]</expression></dataItem><dataItem name="Demographics PCP Address Line 1"><expression>[Patients with Upcoming Appts].[Demographics PCP Address Line 1]</expression></dataItem><dataItem name="Appointment Start Time"><expression>[Patients with Upcoming Appts].[Appointment Start Time]</expression></dataItem></selection>
+		</query><query name="Query1">
+			<source>
+				
+			<joinOperation>
+			<joinOperands>
+				<joinOperand cardinality="1:1"><queryRef refQuery="All Patients with Upcoming Appts"/></joinOperand>
+				<joinOperand cardinality="0:1"><queryRef refQuery="Labs-hyperglycemia"/></joinOperand>
+			</joinOperands>
+			<joinFilter>
+				<filterExpression>[All Patients with Upcoming Appts].[Patient ID_Upcoming Appts] = [Labs-hyperglycemia].[Patient ID]</filterExpression>
+			</joinFilter>
+		</joinOperation></source>
+			<selection><dataItem name="Patient Name"><expression>[All Patients with Upcoming Appts].[Patient Name]</expression></dataItem><dataItem name="Patient Account Number"><expression>[All Patients with Upcoming Appts].[Patient Account Number]</expression></dataItem><dataItem name="Appointment Date"><expression>[All Patients with Upcoming Appts].[Appointment Date]</expression></dataItem><dataItem name="Appointment Start Time"><expression>[All Patients with Upcoming Appts].[Appointment Start Time]</expression></dataItem><dataItem name="Encounter ID"><expression>[All Patients with Upcoming Appts].[Encounter ID]</expression></dataItem><dataItem name="Facility Name"><expression>[All Patients with Upcoming Appts].[Facility Name]</expression></dataItem><dataItem name="Visit Status"><expression>[All Patients with Upcoming Appts].[Visit Status]</expression></dataItem><dataItem name="Visit Type"><expression>[All Patients with Upcoming Appts].[Visit Type]</expression></dataItem><dataItem name="Encounter Type"><expression>[All Patients with Upcoming Appts].[Encounter Type]</expression></dataItem><dataItem name="Patient ID_Upcoming Appts"><expression>[All Patients with Upcoming Appts].[Patient ID_Upcoming Appts]</expression></dataItem><dataItem name="Lab Attribute Value"><expression>[Labs-hyperglycemia].[Lab Attribute Value]</expression></dataItem><dataItem name="Lab Result"><expression>[Labs-hyperglycemia].[Lab Result]</expression></dataItem><dataItem name="Result Date"><expression>[Labs-hyperglycemia].[Result Date]</expression></dataItem><dataItem name="Patient ID_KTracs"><expression>[Labs-hyperglycemia].[Patient ID]</expression></dataItem><dataItem name="Demographics PCP Name"><expression>[All Patients with Upcoming Appts].[Demographics PCP Name]</expression></dataItem><dataItem name="Demographics PCP Address Line 1"><expression>[All Patients with Upcoming Appts].[Demographics PCP Address Line 1]</expression></dataItem><dataItem name="Assessment Name"><expression>[All Patients with Upcoming Appts].[Assessment Name]</expression></dataItem><dataItem name="Inactive"><expression>[All Patients with Upcoming Appts].[Inactive]</expression></dataItem></selection>
+		</query><query name="Patient count"><source><model/></source><selection><dataItem name="Patient count"><expression>Count ([Query1].[Patient Account Number])</expression></dataItem></selection></query><query name="Labs-HbA1c">
+			<source>
+				<model/>
+			</source>
+			<selection><dataItem name="Lab Name" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Lab Name]</expression></dataItem><dataItem name="Lab Attribute" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Lab Attribute]</expression></dataItem><dataItem name="Lab Attribute Value" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Lab Attribute Value]</expression></dataItem><dataItem name="Lab Result" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Lab Result]</expression></dataItem><dataItem name="Patient Account Number" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Patient Account Number]</expression></dataItem><dataItem name="Encounter Date" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Encounter Date]</expression></dataItem><dataItem name="Result Date" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Result Date]</expression></dataItem><dataItem name="Patient ID" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Patient ID]</expression></dataItem></selection>
+		<detailFilters><detailFilter use="required" postAutoAggregation="false"><filterExpression>[Lab Attribute] contains ('a1c')</filterExpression></detailFilter><detailFilter use="prohibited" postAutoAggregation="false"><filterExpression>maximum ([Result Date] for [Patient ID]) = [Result Date]</filterExpression></detailFilter><detailFilter><filterExpression>[Result Date] between _add_months (current_date, -6) and current_date</filterExpression></detailFilter><detailFilter use="required" postAutoAggregation="false"><filterExpression>cast([Lab Attribute Value],NUMERIC,) between 5.7 and 6.4</filterExpression></detailFilter></detailFilters></query><query name="Labs">
+			<source>
+				
+			<joinOperation>
+			<joinOperands>
+				<joinOperand cardinality="0:N"><queryRef refQuery="Labs-hyperglycemia"/></joinOperand>
+				<joinOperand cardinality="0:N"><queryRef refQuery="Labs-HbA1c"/></joinOperand>
+			</joinOperands>
+			<joinFilter>
+				<filterExpression></filterExpression>
+			</joinFilter>
+		</joinOperation></source>
+			<selection/>
+		</query><query name="Query2">
+			<source>
+				
+			<sqlQuery name="SQL2" dataSource="">
+			<sqlText>select enc.patientID as PatientID, labdata.ResultDate as a1cResultDate, labdatadetail.Value as a1cResult
+from enc
+JOIN labdata on enc.encounterID = labdata.EncounterId
+JOIN labDataDetail on labdatadetail.ReportID = labdata.ReportID
+JOIN labloinccodes on labloinccodes.itemid = labdatadetail.PropId
+JOIN items on labdata.ItemId = items.itemID
+WHERE
+labloinccodes.code in ('4548-4') and 
+labdata.received = 1 and 
+enc.deleteFlag = 0 and 
+labdata.deleteFlag = 0 AND
+labdatadetail.Value REGEXP '^(-|\\+){0,1}([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+|[0-9]+)$' = 1
+</sqlText>
+		</sqlQuery></source>
+			<selection/>
+		</query></queries>
+				<layouts>
+					<layout>
+						<reportPages>
+							
+						<page name="Page1"><style><defaultStyles><defaultStyle refStyle="pg"/></defaultStyles></style>
+								<pageBody><style><defaultStyles><defaultStyle refStyle="pb"/></defaultStyles><CSS value="text-align:center"/></style>
+									<contents>
+										<block>
+			<contents><table><style><defaultStyles><defaultStyle refStyle="tb"/></defaultStyles><CSS value="border-collapse:collapse;width:100%"/></style><tableRows><tableRow><tableCells><tableCell><contents><textItem><dataSource><staticValue>Future Appointments:  </staticValue></dataSource><style><CSS value="font-weight:bold"/></style></textItem></contents></tableCell><tableCell><contents><textItem><dataSource><reportExpression>ReportDate ()</reportExpression></dataSource><style><dataFormat><dateFormat dateStyle="medium" displayOrder="MDY"/></dataFormat></style></textItem><textItem><dataSource><staticValue>  -  -  </staticValue></dataSource></textItem><textItem><dataSource><reportExpression>ParamDisplayValue('EndDate')</reportExpression></dataSource><style><dataFormat><dateFormat dateStyle="short" dateSeparator="/" displayOrder="MDY"/></dataFormat></style></textItem></contents></tableCell></tableCells></tableRow><tableRow><tableCells><tableCell><contents><textItem><dataSource><staticValue>Selected Primary Care Provider(s):  </staticValue></dataSource><style><CSS value="font-weight:bold"/></style></textItem></contents></tableCell><tableCell><contents><textItem><dataSource><reportExpression>case
+when ParamDisplayValue('PCP') is null then 'All Providers'
+else ParamDisplayValue('PCP')
+end </reportExpression></dataSource></textItem></contents></tableCell></tableCells></tableRow><tableRow><tableCells><tableCell><contents/></tableCell><tableCell><contents/></tableCell></tableCells></tableRow><tableRow><tableCells><tableCell><contents><textItem><dataSource><staticValue>Patient count</staticValue></dataSource></textItem></contents></tableCell><tableCell><contents><singleton name="Singleton1" refQuery="Patient count">
+			<contents><textItem><dataSource><dataItemValue refDataItem="Patient count"/></dataSource></textItem></contents>
+		</singleton></contents></tableCell></tableCells></tableRow><tableRow><tableCells><tableCell><contents><HTMLItem>
+			<dataSource>
+				<staticValue>&lt;a href="https://kansas.pmpaware.net/login" target=_blank&gt;K-TRACS website&lt;/a&gt;</staticValue>
+			</dataSource>
+		</HTMLItem></contents></tableCell><tableCell><contents><HTMLItem>
+			<dataSource>
+				<staticValue>&lt;a href="mailto:rbadgett@kumc.edu?subject=Problems with 'Patients with Opioid Diagnosis' report" target=_blank"&gt;click to email rbadgett@kumc.edu for problems&lt;/a&gt;</staticValue>
+			</dataSource>
+		</HTMLItem></contents></tableCell></tableCells></tableRow></tableRows></table></contents>
+		<style><CSS value="padding-bottom:5px;background-color:silver"/></style></block><list showColumnTitles="hide" refQuery="Query1">
+			<listColumns>
+				<listColumn>
+					<listColumnTitle>
+						<contents/>
+					</listColumnTitle>
+					<listColumnBody>
+						<contents><list horizontalPagination="true" name="List1" refQuery="Query1">
+											
+											
+											
+											<style>
+												<defaultStyles>
+													<defaultStyle refStyle="ls"/>
+												</defaultStyles>
+												<CSS value="border-collapse:collapse"/>
+											</style>
+										<listColumns><listColumn><listColumnTitle><style><defaultStyles><defaultStyle refStyle="lt"/></defaultStyles></style><contents><textItem><dataSource><dataItemLabel refDataItem="Facility Name"/></dataSource></textItem></contents></listColumnTitle><listColumnBody><style><defaultStyles><defaultStyle refStyle="lm"/></defaultStyles></style><contents><textItem><dataSource><dataItemValue refDataItem="Facility Name"/></dataSource></textItem></contents></listColumnBody></listColumn><listColumn><listColumnTitle><style><defaultStyles><defaultStyle refStyle="lt"/></defaultStyles></style><contents><textItem><dataSource><dataItemLabel refDataItem="Patient Name"/></dataSource></textItem></contents></listColumnTitle><listColumnBody><style><defaultStyles><defaultStyle refStyle="lm"/></defaultStyles></style><contents><textItem><dataSource><dataItemValue refDataItem="Patient Name"/></dataSource></textItem></contents><listColumnRowSpan refDataItem="Patient Name"/></listColumnBody></listColumn><listColumn><listColumnTitle><style><defaultStyles><defaultStyle refStyle="lt"/></defaultStyles></style><contents><textItem><dataSource><dataItemLabel refDataItem="Patient Account Number"/></dataSource></textItem></contents></listColumnTitle><listColumnBody><style><defaultStyles><defaultStyle refStyle="lm"/></defaultStyles></style><contents><textItem><dataSource><dataItemValue refDataItem="Patient Account Number"/></dataSource></textItem></contents><listColumnRowSpan refDataItem="Patient Account Number"/></listColumnBody></listColumn><listColumn><listColumnTitle><style><defaultStyles><defaultStyle refStyle="lt"/></defaultStyles></style><contents><textItem><dataSource><dataItemLabel refDataItem="Demographics PCP Name"/></dataSource></textItem></contents></listColumnTitle><listColumnBody><style><defaultStyles><defaultStyle refStyle="lm"/></defaultStyles></style><contents><textItem><dataSource><dataItemValue refDataItem="Demographics PCP Name"/></dataSource></textItem></contents></listColumnBody></listColumn><listColumn><listColumnTitle><style><defaultStyles><defaultStyle refStyle="lt"/></defaultStyles></style><contents><textItem><dataSource><staticValue>Next Appointment Date</staticValue></dataSource></textItem></contents></listColumnTitle><listColumnBody><style><defaultStyles><defaultStyle refStyle="lm"/></defaultStyles></style><contents><textItem><dataSource><dataItemValue refDataItem="Appointment Date"/></dataSource></textItem></contents><listColumnRowSpan refDataItem="Patient Account Number"/></listColumnBody></listColumn><listColumn><listColumnTitle><style><defaultStyles><defaultStyle refStyle="lt"/></defaultStyles></style><contents><textItem><dataSource><dataItemLabel refDataItem="Appointment Start Time"/></dataSource></textItem></contents></listColumnTitle><listColumnBody><style><defaultStyles><defaultStyle refStyle="lm"/></defaultStyles></style><contents><textItem><dataSource><dataItemValue refDataItem="Appointment Start Time"/></dataSource></textItem></contents></listColumnBody></listColumn><listColumn><listColumnTitle><style><defaultStyles><defaultStyle refStyle="lt"/></defaultStyles></style><contents><textItem><dataSource><dataItemLabel refDataItem="Visit Type"/></dataSource></textItem></contents></listColumnTitle><listColumnBody><style><defaultStyles><defaultStyle refStyle="lm"/></defaultStyles></style><contents><textItem><dataSource><dataItemValue refDataItem="Visit Type"/></dataSource></textItem></contents><listColumnRowSpan refDataItem="Patient Account Number"/></listColumnBody></listColumn><listColumn><listColumnTitle><style><defaultStyles><defaultStyle refStyle="lt"/></defaultStyles></style><contents><textItem><dataSource><dataItemLabel refDataItem="Visit Status"/></dataSource></textItem></contents></listColumnTitle><listColumnBody><style><defaultStyles><defaultStyle refStyle="lm"/></defaultStyles></style><contents><textItem><dataSource><dataItemValue refDataItem="Visit Status"/></dataSource></textItem></contents><listColumnRowSpan refDataItem="Patient Account Number"/></listColumnBody></listColumn><listColumn><listColumnTitle><style><defaultStyles><defaultStyle refStyle="lt"/></defaultStyles></style><contents><textItem><dataSource><dataItemLabel refDataItem="Assessment Name"/></dataSource></textItem></contents></listColumnTitle><listColumnBody><style><defaultStyles><defaultStyle refStyle="lm"/></defaultStyles></style><contents><textItem><dataSource><dataItemValue refDataItem="Assessment Name"/></dataSource></textItem></contents></listColumnBody></listColumn><listColumn><listColumnTitle><style><defaultStyles><defaultStyle refStyle="lt"/></defaultStyles></style><contents><textItem><dataSource><dataItemLabel refDataItem="Inactive"/></dataSource></textItem></contents></listColumnTitle><listColumnBody><style><defaultStyles><defaultStyle refStyle="lm"/></defaultStyles></style><contents><textItem><dataSource><dataItemValue refDataItem="Inactive"/></dataSource></textItem></contents></listColumnBody></listColumn><listColumn><listColumnTitle><style><defaultStyles><defaultStyle refStyle="lt"/></defaultStyles></style><contents><textItem><dataSource><staticValue>Lab result</staticValue></dataSource></textItem></contents></listColumnTitle><listColumnBody><style><defaultStyles><defaultStyle refStyle="lm"/></defaultStyles></style><contents><textItem><dataSource><dataItemValue refDataItem="Lab Attribute Value"/></dataSource></textItem></contents></listColumnBody></listColumn><listColumn><listColumnTitle><style><defaultStyles><defaultStyle refStyle="lt"/></defaultStyles></style><contents><textItem><dataSource><staticValue>Last lab Date</staticValue></dataSource></textItem></contents></listColumnTitle><listColumnBody><style><defaultStyles><defaultStyle refStyle="lm"/></defaultStyles></style><contents><textItem><dataSource><dataItemValue refDataItem="Result Date"/></dataSource></textItem></contents><listColumnRowSpan refDataItem="Patient Account Number"/></listColumnBody></listColumn></listColumns><listGroups><listGroup refDataItem="Visit Status"/><listGroup refDataItem="Visit Type"/><listGroup refDataItem="Appointment Date"/><listGroup refDataItem="Patient Account Number"/><listGroup refDataItem="Patient Name"/><listGroup refDataItem="Result Date"/></listGroups></list></contents>
+						<style>
+							<defaultStyles>
+								<defaultStyle refStyle="sb"/>
+							</defaultStyles>
+						</style>
+					</listColumnBody>
+				</listColumn>
+			</listColumns>
+			
+			
+			
+			<style>
+				<CSS value="border-collapse:collapse; width:100%"/>
+				<defaultStyles>
+					<defaultStyle refStyle="sc"/>
+				</defaultStyles>
+			</style>
+		<listGroups><listGroup refDataItem="Facility Name"/></listGroups><sortList><sortItem refDataItem="Appointment Date"/><sortItem refDataItem="Appointment Start Time"/></sortList></list>
+									</contents>
+								</pageBody>
+								<pageHeader>
+									<contents>
+										<block><style><defaultStyles><defaultStyle refStyle="ta"/></defaultStyles><CSS value="background-color:#336699;color:white;font-family:Georgia;font-size:14pt"/></style>
+											<contents>
+												<textItem><style><defaultStyles><defaultStyle refStyle="tt"/></defaultStyles><CSS value="text-decoration:none;font-family:'Times New Roman';font-size:16pt"/></style>
+													<dataSource>
+														<staticValue>Patients with possible prediabetes</staticValue>
+													</dataSource>
+												</textItem>
+											</contents>
+										</block>
+									</contents>
+									<style>
+										<defaultStyles>
+											<defaultStyle refStyle="ph"/>
+										</defaultStyles>
+										<CSS value="padding-bottom:5px"/>
+									</style>
+								</pageHeader>
+								<pageFooter>
+									<contents>
+										<table>
+											<tableRows>
+												<tableRow>
+													<tableCells>
+														<tableCell>
+															<contents>
+																<date>
+																	<style>
+																		<dataFormat>
+																			<dateFormat/>
+																		</dataFormat>
+																	</style>
+																</date>
+															</contents>
+															<style>
+																<CSS value="vertical-align:top;text-align:left;width:25%"/>
+															</style>
+														</tableCell>
+														<tableCell>
+															<contents>
+																<pageNumber/>
+															</contents>
+															<style>
+																<CSS value="vertical-align:top;text-align:center;width:50%"/>
+															</style>
+														</tableCell>
+														<tableCell>
+															<contents>
+																<time>
+																	<style>
+																		<dataFormat>
+																			<timeFormat/>
+																		</dataFormat>
+																	</style>
+																</time>
+															</contents>
+															<style>
+																<CSS value="vertical-align:top;text-align:right;width:25%"/>
+															</style>
+														</tableCell>
+													</tableCells>
+												</tableRow>
+											</tableRows>
+											<style>
+												<defaultStyles>
+													<defaultStyle refStyle="tb"/>
+												</defaultStyles>
+												<CSS value="border-collapse:collapse;width:100%"/>
+											</style>
+										</table>
+									</contents>
+									<style>
+										<defaultStyles>
+											<defaultStyle refStyle="pf"/>
+										</defaultStyles>
+										<CSS value="padding-top:3px"/>
+									</style>
+								</pageFooter>
+							</page></reportPages>
+					<promptPages><page name="Prompt Page1">
+			<pageHeader>
+				<contents>
+					<block>
+						<contents>
+							<textItem>
+								<dataSource>
+									<staticValue>Patients with possible prediabetes</staticValue>
+								</dataSource>
+								<style>
+									<defaultStyles>
+										<defaultStyle refStyle="tt"/>
+									</defaultStyles>
+								</style>
+							</textItem>
+						</contents>
+						<style>
+							<defaultStyles>
+								<defaultStyle refStyle="ta"/>
+							</defaultStyles>
+						</style>
+					</block>
+				</contents>
+				<style>
+					<defaultStyles>
+						<defaultStyle refStyle="hp"/>
+					</defaultStyles>
+				</style>
+			</pageHeader>
+			<pageBody>
+				<contents><table><style><defaultStyles><defaultStyle refStyle="tb"/></defaultStyles><CSS value="border-collapse:collapse;width:100%"/></style><tableRows><tableRow><tableCells><tableCell><contents/></tableCell><tableCell><contents><selectDate parameter="BeginDate" multiSelect="false" range="false" required="true"><defaultSelections><defaultSimpleSelection>2014-01-01</defaultSimpleSelection></defaultSelections><style><CSS value="display:none"/></style></selectDate><selectDate parameter="EndDate" multiSelect="false" range="false" required="true"><defaultSelections><defaultSimpleSelection>2050-12-31</defaultSimpleSelection></defaultSelections><style><CSS value="display:none"/></style></selectDate></contents></tableCell></tableCells></tableRow><tableRow><tableCells><tableCell><contents/></tableCell><tableCell><contents/></tableCell></tableCells></tableRow><tableRow><tableCells><tableCell><contents/></tableCell><tableCell><contents/></tableCell></tableCells></tableRow></tableRows></table></contents>
+				<style>
+					<defaultStyles>
+						<defaultStyle refStyle="py"/>
+					</defaultStyles>
+				</style>
+			</pageBody>
+			<pageFooter>
+				<contents>
+					<promptButton type="cancel">
+						<contents/>
+						<style>
+							<defaultStyles>
+								<defaultStyle refStyle="bp"/>
+							</defaultStyles>
+						</style>
+					</promptButton>
+					<promptButton type="back">
+						<contents/>
+						<style>
+							<defaultStyles>
+								<defaultStyle refStyle="bp"/>
+							</defaultStyles>
+						</style>
+					</promptButton>
+					<promptButton type="next">
+						<contents/>
+						<style>
+							<defaultStyles>
+								<defaultStyle refStyle="bp"/>
+							</defaultStyles>
+						</style>
+					</promptButton>
+					<promptButton type="finish">
+						<contents/>
+						<style>
+							<defaultStyles>
+								<defaultStyle refStyle="bp"/>
+							</defaultStyles>
+						</style>
+					</promptButton>
+				</contents>
+				<style>
+					<defaultStyles>
+						<defaultStyle refStyle="fp"/>
+					</defaultStyles>
+				</style>
+			</pageFooter>
+			<style>
+				<defaultStyles>
+					<defaultStyle refStyle="pp"/>
+				</defaultStyles>
+			</style>
+		</page></promptPages></layout>
+				</layouts>
+				<classStyles>
+					<classStyle name="pd_1">
+						<CSS value="background-color:#009933; color:#FFFFFF;"/>
+					</classStyle>
+					<classStyle name="pd_2">
+						<CSS value="background-color:#FFFFFF; color:#009933;"/>
+					</classStyle>
+					<classStyle name="pd_3">
+						<CSS value="background-color:#FFFFFF; color:#CC9900;"/>
+					</classStyle>
+					<classStyle name="pd_4">
+						<CSS value="background-color:#FFFFFF; color:#990000;"/>
+					</classStyle>
+					<classStyle name="pd_5">
+						<CSS value="background-color:#990000; color:#FFFFFF;"/>
+					</classStyle>
+				</classStyles>
+			<XMLAttributes><XMLAttribute name="RS_CreateExtendedDataItems" output="no" value="true"/><XMLAttribute name="listSeparator" output="no" value=","/></XMLAttributes><modelPath>/content/package[@name='eCWEBO']/model[@name='model']</modelPath><namedConditionalStyles><stringsConditionalStyle name="Conditional Style 1"><conditionalDataItem refQuery="Query1" refDataItem="Result Date"/><stringConditions><stringCriteria operator="like"><style><defaultStyles><defaultStyle refStyle="pd_5"/></defaultStyles></style><styleValue> </styleValue></stringCriteria></stringConditions><styleDefault/></stringsConditionalStyle></namedConditionalStyles></report>
