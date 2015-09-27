@@ -1,25 +1,22 @@
-<report xmlns="http://developer.cognos.com/schemas/report/6.0/" expressionLocale="en" ignoreFilterContext="false"><!--RSU-SPC-0093 The report specification was upgraded from &amp;amp;amp;amp;amp;amp;amp;quot;http://developer.cognos.com/schemas/report/4.0/&amp;amp;amp;amp;amp;amp;amp;quot; to &amp;amp;amp;amp;amp;amp;amp;quot;http://developer.cognos.com/schemas/report/6.0/&amp;amp;amp;amp;amp;amp;amp;quot; at 2014-7-14. 15:40:37-->
-				
-				<queries>
-					
-				<query name="INR">
-			<source>
-				<model/>
-			</source>
-			<selection><dataItem name="Patient ID" sort="ascending"><expression>[Lab / DI Analysis].[Lab Analysis].[Patient ID]</expression></dataItem><dataItem name="Subject ID"><expression>running-count(distinct [Patient ID]) </expression></dataItem><dataItem name="New PT"><expression>IF (running-difference ([Patient ID]) &lt; 1) THEN (0)
-ELSE (1)</expression></dataItem><dataItem name="Encounter Date" aggregate="none" rollupAggregate="none" sort="ascending"><expression>[Lab / DI Analysis].[Lab Analysis].[Encounter Date]</expression></dataItem><dataItem name="Interval1" aggregate="none" rollupAggregate="none"><expression>_days_between ([Encounter Date],2015-01-01)</expression></dataItem><dataItem name="Interval2"><expression>IF ([New PT] = 1) THEN (0)
-ELSE (running-difference ([Interval1]))</expression></dataItem><dataItem name="Days"><expression>running-total([Interval2] for [Patient ID])</expression></dataItem><dataItem name="Lab Attribute" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Lab Attribute]</expression></dataItem><dataItem name="Lab Attribute Value" aggregate="none" rollupAggregate="none"><expression>[Lab Analysis with Alias].[Lab Analysis with Alias].[Lab Attribute Value]</expression></dataItem></selection>
-		<detailFilters><detailFilter use="required" postAutoAggregation="false"><filterExpression>[Lab Attribute] contains 'INR'</filterExpression></detailFilter><detailFilter use="prohibited" postAutoAggregation="false"><filterExpression>[Result Date] between _add_days (current_date, -90) and current_date </filterExpression></detailFilter><detailFilter use="required" postAutoAggregation="false"><filterExpression>([Problem List].[Problem List Analysis].[Assessment Code] contains 'v58.61' OR lower([Prescribed Items].[Prescribed Items].[Drug Name])  contains 'warfarin') AND NOT [Problem List].[Problem List Analysis].[Assessment Code] contains 'valv' </filterExpression></detailFilter><detailFilter use="required" postAutoAggregation="false"><filterExpression>([EMR Reporting].[Demographics PCP].[Demographics PCP Address Line 1] contains '1125' AND [EMR Reporting].[Demographics PCP].[Demographics PCP Address Line 1] contains 'Topeka')</filterExpression></detailFilter></detailFilters><memberSetStructure/><queryHints><autoSort value="all"/></queryHints></query></queries>
+<report xmlns="http://developer.cognos.com/schemas/report/6.0/" expressionLocale="en">
+				<modelPath>/content/package[@name='eCWEBO']/model[@name='model']</modelPath>
+				<drillBehavior modelBasedDrillThru="true"/>
 				<layouts>
 					<layout>
 						<reportPages>
-							<page name="Page1"><style><defaultStyles><defaultStyle refStyle="pg"/></defaultStyles></style>
-								<pageBody><style><defaultStyles><defaultStyle refStyle="pb"/></defaultStyles><CSS value="text-align:center"/></style>
-									<contents>
-										<block>
-			<contents><table><style><defaultStyles><defaultStyle refStyle="tb"/></defaultStyles><CSS value="border-collapse:collapse;width:100%"/></style><tableRows><tableRow><tableCells><tableCell><contents><table><style><defaultStyles><defaultStyle refStyle="tb"/></defaultStyles><CSS value="border-collapse:collapse;width:100%"/></style><tableRows><tableRow><tableCells><tableCell><contents><textItem><dataSource><staticValue>Patients with anticoagulation but not valv</staticValue></dataSource></textItem></contents></tableCell><tableCell><contents/></tableCell></tableCells></tableRow><tableRow><tableCells><tableCell><contents><textItem><dataSource><staticValue>You may need to remove '&gt;' from INR values</staticValue></dataSource></textItem></contents></tableCell><tableCell><contents/></tableCell></tableCells></tableRow></tableRows></table></contents></tableCell><tableCell><contents/></tableCell></tableCells></tableRow></tableRows></table></contents>
-		<style><CSS value="padding-bottom:5px;background-color:silver"/></style></block>
-									<list horizontalPagination="true" name="List1" refQuery="INR" pageBreakText="false">
+							<page name="Page1">
+								<style>
+									<defaultStyles>
+										<defaultStyle refStyle="pg"/>
+									</defaultStyles>
+								</style>
+								<pageBody>
+									<style>
+										<defaultStyles>
+											<defaultStyle refStyle="pb"/>
+										</defaultStyles>
+									</style>
+									<contents><list horizontalPagination="true" name="List1" refQuery="anonymize">
 			
 			
 			
@@ -29,106 +26,94 @@ ELSE (running-difference ([Interval1]))</expression></dataItem><dataItem name="D
 					<defaultStyle refStyle="ls"/>
 				</defaultStyles>
 			</style>
-		<listColumns><listColumn><listColumnTitle><style><defaultStyles><defaultStyle refStyle="lt"/></defaultStyles></style><contents><textItem><dataSource><dataItemLabel refDataItem="Subject ID"/></dataSource></textItem></contents></listColumnTitle><listColumnBody><style><defaultStyles><defaultStyle refStyle="lm"/></defaultStyles></style><contents><textItem><dataSource><dataItemValue refDataItem="Subject ID"/></dataSource></textItem></contents></listColumnBody></listColumn><listColumn><listColumnTitle><style><defaultStyles><defaultStyle refStyle="lt"/></defaultStyles></style><contents><textItem><dataSource><staticValue>Day</staticValue></dataSource></textItem></contents></listColumnTitle><listColumnBody><style><defaultStyles><defaultStyle refStyle="lm"/></defaultStyles></style><contents><textItem><dataSource><dataItemValue refDataItem="Days"/></dataSource></textItem></contents></listColumnBody></listColumn><listColumn><listColumnTitle><style><defaultStyles><defaultStyle refStyle="lt"/></defaultStyles></style><contents><textItem><dataSource><staticValue>INR</staticValue></dataSource></textItem></contents></listColumnTitle><listColumnBody><style><defaultStyles><defaultStyle refStyle="lc"/></defaultStyles></style><contents><textItem><dataSource><dataItemValue refDataItem="Lab Attribute Value"/></dataSource></textItem></contents></listColumnBody></listColumn></listColumns><listGroups><listGroup refDataItem="Patient ID"/><listGroup refDataItem="Encounter Date"/></listGroups></list></contents>
+		<listColumns><listColumn><listColumnTitle><style><defaultStyles><defaultStyle refStyle="lt"/></defaultStyles></style><contents><textItem><dataSource><dataItemLabel refDataItem="Subject ID"/></dataSource></textItem></contents></listColumnTitle><listColumnBody><style><defaultStyles><defaultStyle refStyle="lm"/></defaultStyles></style><contents><textItem><dataSource><dataItemValue refDataItem="Subject ID"/></dataSource></textItem></contents></listColumnBody></listColumn><listColumn><listColumnTitle><style><defaultStyles><defaultStyle refStyle="lt"/></defaultStyles></style><contents><textItem><dataSource><dataItemLabel refDataItem="Days"/></dataSource></textItem></contents></listColumnTitle><listColumnBody><style><defaultStyles><defaultStyle refStyle="lm"/></defaultStyles></style><contents><textItem><dataSource><dataItemValue refDataItem="Days"/></dataSource></textItem></contents></listColumnBody></listColumn><listColumn><listColumnTitle><style><defaultStyles><defaultStyle refStyle="lt"/></defaultStyles></style><contents><textItem><dataSource><dataItemLabel refDataItem="Lab Attribute Value"/></dataSource></textItem></contents></listColumnTitle><listColumnBody><style><defaultStyles><defaultStyle refStyle="lm"/></defaultStyles></style><contents><textItem><dataSource><dataItemValue refDataItem="Lab Attribute Value"/></dataSource></textItem></contents></listColumnBody></listColumn></listColumns><listGroups><listGroup refDataItem="Patient ID"/><listGroup refDataItem="Encounter Date"/></listGroups></list></contents>
 								</pageBody>
-								<pageHeader>
-									<contents>
-										<block><style><defaultStyles><defaultStyle refStyle="ta"/></defaultStyles><CSS value="background-color:#336699;color:white;font-family:Georgia;font-size:14pt"/></style>
-											<contents>
-												<textItem><style><defaultStyles><defaultStyle refStyle="tt"/></defaultStyles><CSS value="text-decoration:none;font-family:'Times New Roman';font-size:16pt"/></style>
-													<dataSource>
-														<staticValue>INRs (save as csv and remove headers and footers)</staticValue>
-													</dataSource>
-												</textItem>
-											</contents>
-										</block>
-									</contents>
-									<style>
-										<defaultStyles>
-											<defaultStyle refStyle="ph"/>
-										</defaultStyles>
-										<CSS value="padding-bottom:5px"/>
-									</style>
-								</pageHeader>
-								<pageFooter>
-									<contents>
-										<table>
-											<tableRows>
-												<tableRow>
-													<tableCells>
-														<tableCell>
-															<contents>
-																<date>
-																	<style>
-																		<dataFormat>
-																			<dateFormat/>
-																		</dataFormat>
-																	</style>
-																</date>
-															</contents>
-															<style>
-																<CSS value="vertical-align:top;text-align:left;width:25%"/>
-															</style>
-														</tableCell>
-														<tableCell>
-															<contents>
-																<pageNumber/>
-															</contents>
-															<style>
-																<CSS value="vertical-align:top;text-align:center;width:50%"/>
-															</style>
-														</tableCell>
-														<tableCell>
-															<contents>
-																<time>
-																	<style>
-																		<dataFormat>
-																			<timeFormat/>
-																		</dataFormat>
-																	</style>
-																</time>
-															</contents>
-															<style>
-																<CSS value="vertical-align:top;text-align:right;width:25%"/>
-															</style>
-														</tableCell>
-													</tableCells>
-												</tableRow>
-											</tableRows>
-											<style>
-												<defaultStyles>
-													<defaultStyle refStyle="tb"/>
-												</defaultStyles>
-												<CSS value="border-collapse:collapse;width:100%"/>
-											</style>
-										</table>
-									</contents>
-									<style>
-										<defaultStyles>
-											<defaultStyle refStyle="pf"/>
-										</defaultStyles>
-										<CSS value="padding-top:3px"/>
-									</style>
-								</pageFooter>
 							</page>
 						</reportPages>
 					</layout>
 				</layouts>
-				<classStyles>
-					<classStyle name="pd_1">
-						<CSS value="background-color:#009933; color:#FFFFFF;"/>
-					</classStyle>
-					<classStyle name="pd_2">
-						<CSS value="background-color:#FFFFFF; color:#009933;"/>
-					</classStyle>
-					<classStyle name="pd_3">
-						<CSS value="background-color:#FFFFFF; color:#CC9900;"/>
-					</classStyle>
-					<classStyle name="pd_4">
-						<CSS value="background-color:#FFFFFF; color:#990000;"/>
-					</classStyle>
-					<classStyle name="pd_5">
-						<CSS value="background-color:#990000; color:#FFFFFF;"/>
-					</classStyle>
-				</classStyles>
-			<XMLAttributes><XMLAttribute name="RS_CreateExtendedDataItems" output="no" value="true"/><XMLAttribute name="listSeparator" output="no" value=","/></XMLAttributes><modelPath>/content/package[@name='eCWEBO']/model[@name='model']</modelPath></report>
+			<XMLAttributes><XMLAttribute name="RS_CreateExtendedDataItems" value="true" output="no"/><XMLAttribute name="listSeparator" value="," output="no"/></XMLAttributes><queries><query name="Patients from selected site">
+			<source>
+				<model/>
+			</source>
+			<selection><dataItem name="Patient ID" aggregate="none" rollupAggregate="none"><expression>[EMR Reporting].[Patients].[Patient ID]</expression></dataItem><dataItem name="Patient Account Number" aggregate="none" rollupAggregate="none"><expression>[EMR Reporting].[Patients].[Patient Account Number]</expression></dataItem><dataItem name="Patient MRN" aggregate="none" rollupAggregate="none"><expression>[EMR Reporting].[Patients].[Patient MRN]</expression></dataItem><dataItem name="Patient Name" aggregate="none" rollupAggregate="none"><expression>[EMR Reporting].[Patients].[Patient Name]</expression></dataItem><dataItem name="Demographics PCP Name" aggregate="none" rollupAggregate="none"><expression>[EMR Reporting].[Demographics PCP].[Demographics PCP Name]</expression></dataItem><dataItem name="Demographics PCP Address Line 1" aggregate="none" rollupAggregate="none"><expression>[EMR Reporting].[Demographics PCP].[Demographics PCP Address Line 1]</expression></dataItem></selection>
+		<detailFilters><detailFilter use="prohibited" postAutoAggregation="false"><filterExpression>([EMR Reporting].[Demographics PCP].[Demographics PCP Address Line 1] contains '1125' AND [EMR Reporting].[Demographics PCP].[Demographics PCP Address Line 1] contains 'Topeka')</filterExpression></detailFilter><detailFilter use="required" postAutoAggregation="false"><filterExpression>([EMR Reporting].[Demographics PCP].[Demographics PCP Address Line 1] contains '1001' AND [EMR Reporting].[Demographics PCP].[Demographics PCP Address Line 1] contains 'Minn')</filterExpression></detailFilter><detailFilter use="prohibited" postAutoAggregation="false"><filterExpression>([EMR Reporting].[Demographics PCP].[Demographics PCP Address Line 1] contains '9300' AND [EMR Reporting].[Demographics PCP].[Demographics PCP Address Line 1] contains '29')</filterExpression></detailFilter></detailFilters></query><query name="Active problems">
+			<source>
+				
+			<sqlQuery name="SQL1" dataSource="eClinicalWorks">
+			<sqlText>select pl.patientid as 'Patient ID', pl.asmtid as 'Assessment Code', pl.WUStatus, pl.inactiveflag as Inactive, pl.deleteflag As Deleted, pl.condition as ClinicalStatus , i.itemname as 'Assessment Name'
+from problemlist pl 
+inner join items i on i.itemid=pl.asmtid
+inner join itemdetail id on id.itemid=pl.asmtid
+where pl.deleteflag&gt;=0 and pl.inactiveflag&gt;=0</sqlText>
+		<mdProjectedItems><mdProjectedItem name="Patient ID"/><mdProjectedItem name="Assessment Code"/><mdProjectedItem name="WUStatus"/><mdProjectedItem name="Inactive"/><mdProjectedItem name="Deleted"/><mdProjectedItem name="ClinicalStatus"/><mdProjectedItem name="Assessment Name"/></mdProjectedItems></sqlQuery></source>
+			<selection><dataItem name="Patient ID"><expression>[SQL1].[Patient ID]</expression></dataItem><dataItem name="Assessment Code"><expression>[SQL1].[Assessment Code]</expression></dataItem><dataItem name="Assessment Name"><expression>[SQL1].[Assessment Name]</expression></dataItem><dataItem name="ClinicalStatus"><expression>[SQL1].[ClinicalStatus]</expression></dataItem><dataItem name="WUStatus"><expression>[SQL1].[WUStatus]</expression></dataItem><dataItem name="Inactive"><expression>[SQL1].[Inactive]</expression></dataItem><dataItem name="Deleted"><expression>[SQL1].[Deleted]</expression></dataItem></selection>
+		<detailFilters><detailFilter use="required" postAutoAggregation="false"><filterExpression>lower([SQL1].[Assessment Name]) contains 'anticoagul' </filterExpression></detailFilter><detailFilter use="prohibited" postAutoAggregation="false"><filterExpression>[SQL1].[WUStatus] = 'confirmed'</filterExpression></detailFilter><detailFilter use="prohibited" postAutoAggregation="false"><filterExpression>[SQL1].[Assessment Code] in (326476)</filterExpression></detailFilter><detailFilter use="required" postAutoAggregation="false"><filterExpression>[SQL1].[Inactive] = 0</filterExpression></detailFilter><detailFilter use="required" postAutoAggregation="false"><filterExpression>[SQL1].[Deleted] = 0</filterExpression></detailFilter></detailFilters></query><query name="Patients with active problems">
+			<source>
+				
+			<joinOperation>
+			<joinOperands>
+				<joinOperand cardinality="1:N"><queryRef refQuery="Patients from selected site"/></joinOperand>
+				<joinOperand cardinality="1:N"><queryRef refQuery="Active problems"/></joinOperand>
+			</joinOperands>
+			<joinFilter>
+				<filterExpression>[Patients from selected site].[Patient ID] = [Active problems].[Patient ID]</filterExpression>
+			</joinFilter>
+		</joinOperation></source>
+			<selection><dataItem name="Patient Name"><expression>[Patients from selected site].[Patient Name]</expression></dataItem><dataItem name="Patient MRN"><expression>[Patients from selected site].[Patient MRN]</expression></dataItem><dataItem name="Patient Account Number"><expression>[Patients from selected site].[Patient Account Number]</expression></dataItem><dataItem name="Patient ID"><expression>[Patients from selected site].[Patient ID]</expression></dataItem><dataItem name="Demographics PCP Address Line 1"><expression>[Patients from selected site].[Demographics PCP Address Line 1]</expression></dataItem><dataItem name="Demographics PCP Name"><expression>[Patients from selected site].[Demographics PCP Name]</expression></dataItem><dataItem name="Deleted"><expression>[Active problems].[Deleted]</expression></dataItem><dataItem name="Inactive"><expression>[Active problems].[Inactive]</expression></dataItem><dataItem name="WUStatus"><expression>[Active problems].[WUStatus]</expression></dataItem><dataItem name="ClinicalStatus"><expression>[Active problems].[ClinicalStatus]</expression></dataItem><dataItem name="Assessment Name"><expression>[Active problems].[Assessment Name]</expression></dataItem><dataItem name="Assessment Code"><expression>[Active problems].[Assessment Code]</expression></dataItem></selection>
+		</query><query name="Not valve">
+			<source>
+				
+			<sqlQuery name="SQL1" dataSource="eClinicalWorks">
+			<sqlText>select pl.patientid as 'Patient ID', pl.asmtid as 'Assessment Code', pl.WUStatus, pl.inactiveflag as Inactive, pl.deleteflag As Deleted, pl.condition as ClinicalStatus , i.itemname as 'Assessment Name'
+from problemlist pl 
+inner join items i on i.itemid=pl.asmtid
+inner join itemdetail id on id.itemid=pl.asmtid
+where pl.deleteflag&gt;=0 and pl.inactiveflag&gt;=0</sqlText>
+		<mdProjectedItems><mdProjectedItem name="Patient ID"/><mdProjectedItem name="Assessment Code"/><mdProjectedItem name="WUStatus"/><mdProjectedItem name="Inactive"/><mdProjectedItem name="Deleted"/><mdProjectedItem name="ClinicalStatus"/><mdProjectedItem name="Assessment Name"/></mdProjectedItems></sqlQuery></source>
+			<selection><dataItem name="Patient ID"><expression>[SQL1].[Patient ID]</expression></dataItem></selection>
+		<detailFilters><detailFilter use="prohibited" postAutoAggregation="false"><filterExpression>[SQL1].[WUStatus] = 'confirmed'</filterExpression></detailFilter><detailFilter use="prohibited" postAutoAggregation="false"><filterExpression>[SQL1].[Assessment Code] in (326476)</filterExpression></detailFilter><detailFilter use="required" postAutoAggregation="false"><filterExpression>[SQL1].[Inactive] = 0</filterExpression></detailFilter><detailFilter use="required" postAutoAggregation="false"><filterExpression>[SQL1].[Deleted] = 0</filterExpression></detailFilter><detailFilter use="required" postAutoAggregation="false"><filterExpression>lower([SQL1].[Assessment Name]) not contains 'hypertens' </filterExpression></detailFilter></detailFilters></query><query name="Pts with anticoag and not valve">
+			<source>
+				
+			<joinOperation>
+			<joinOperands>
+				<joinOperand cardinality="1:N"><queryRef refQuery="Patients with active problems"/></joinOperand>
+				<joinOperand cardinality="0:N"><queryRef refQuery="Not valve"/></joinOperand>
+			</joinOperands>
+			<joinFilter>
+				<filterExpression>[Patients with active problems].[Patient ID] = [Not valve].[Patient ID]</filterExpression>
+			</joinFilter>
+		</joinOperation></source>
+			<selection><dataItem name="Patient Name"><expression>[Patients with active problems].[Patient Name]</expression></dataItem><dataItem name="Patient ID"><expression>[Patients with active problems].[Patient ID]</expression></dataItem><dataItem name="Demographics PCP Name"><expression>[Patients with active problems].[Demographics PCP Name]</expression></dataItem><dataItem name="Demographics PCP Address Line 1"><expression>[Patients with active problems].[Demographics PCP Address Line 1]</expression></dataItem><dataItem name="Assessment Code"><expression>[Patients with active problems].[Assessment Code]</expression></dataItem><dataItem name="Assessment Name"><expression>[Patients with active problems].[Assessment Name]</expression></dataItem><dataItem name="ClinicalStatus"><expression>[Patients with active problems].[ClinicalStatus]</expression></dataItem><dataItem name="WUStatus"><expression>[Patients with active problems].[WUStatus]</expression></dataItem><dataItem name="Inactive"><expression>[Patients with active problems].[Inactive]</expression></dataItem><dataItem name="Deleted"><expression>[Patients with active problems].[Deleted]</expression></dataItem><dataItem name="New PT"><expression>IF (running-difference ([Patients with active problems].[Patient ID]) &lt; 1) THEN (0)
+ELSE (1)</expression></dataItem><dataItem name="Subject ID"><expression>running-count(distinct [Patients with active problems].[Patient ID]) </expression></dataItem></selection>
+		</query><query name="INRs">
+			<source>
+				<model/>
+			</source>
+			<selection><dataItem name="Patient ID" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Patient ID]</expression></dataItem><dataItem name="Patient Account Number" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Patient Account Number]</expression></dataItem><dataItem name="Encounter Date" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Encounter Date]</expression></dataItem><dataItem name="Lab Name" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Lab Name]</expression></dataItem><dataItem name="Lab Attribute Value" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Lab Attribute Value]</expression></dataItem><dataItem name="Lab Attribute" aggregate="none" rollupAggregate="none"><expression>[Lab / DI Analysis].[Lab Analysis].[Lab Attribute]</expression></dataItem></selection>
+		<detailFilters><detailFilter use="required" postAutoAggregation="false"><filterExpression>lower([Lab Attribute]) in ('INR')</filterExpression></detailFilter></detailFilters></query><query name="result">
+			<source>
+				
+			<joinOperation>
+			<joinOperands>
+				<joinOperand cardinality="1:N"><queryRef refQuery="Pts with anticoag and not valve"/></joinOperand>
+				<joinOperand cardinality="1:N"><queryRef refQuery="INRs"/></joinOperand>
+			</joinOperands>
+			<joinFilter>
+				<filterExpression>[Pts with anticoag and not valve].[Patient ID] = [INRs].[Patient ID]</filterExpression>
+			</joinFilter>
+		</joinOperation></source>
+			<selection><dataItem name="Patient ID" sort="ascending"><expression>[Pts with anticoag and not valve].[Patient ID]</expression></dataItem><dataItem name="Patient Name"><expression>[Pts with anticoag and not valve].[Patient Name]</expression></dataItem><dataItem name="Demographics PCP Address Line 1"><expression>[Pts with anticoag and not valve].[Demographics PCP Address Line 1]</expression></dataItem><dataItem name="Demographics PCP Name"><expression>[Pts with anticoag and not valve].[Demographics PCP Name]</expression></dataItem><dataItem name="Encounter Date"><expression>[INRs].[Encounter Date]</expression></dataItem><dataItem name="Lab Attribute"><expression>[INRs].[Lab Attribute]</expression></dataItem><dataItem name="Lab Attribute Value"><expression>[INRs].[Lab Attribute Value]</expression></dataItem><dataItem name="Subject ID"><expression>running-count(distinct [Pts with anticoag and not valve].[Patient ID])</expression></dataItem><dataItem name="New PT"><expression>IF (running-difference ([Pts with anticoag and not valve].[Patient ID]) &lt; 1) THEN (0)
+ELSE (1)</expression></dataItem><dataItem name="Interval1" aggregate="none" rollupAggregate="none"><expression>_days_between ([INRs].[Encounter Date],2015-01-01)</expression></dataItem><dataItem name="Interval2"><expression>IF ([New PT] = 1) THEN (0)
+ELSE (running-difference ([Interval1]))</expression></dataItem><dataItem name="Days"><expression>running-total([Interval2] for [Patient ID])</expression></dataItem></selection>
+		</query><query name="anonymize">
+			<source>
+				
+			<queryRef refQuery="result"/></source>
+			<selection><dataItem name="Patient ID" sort="ascending"><expression>[result].[Patient ID]</expression></dataItem><dataItem name="Encounter Date" sort="ascending"><expression>[result].[Encounter Date]</expression></dataItem><dataItem name="Subject ID"><expression>[result].[Subject ID]</expression></dataItem><dataItem name="Days"><expression>[result].[Days]</expression></dataItem><dataItem name="Lab Attribute Value"><expression>[result].[Lab Attribute Value]</expression></dataItem></selection>
+		<detailFilters><detailFilter use="prohibited" postAutoAggregation="false"><filterExpression>[Result Date] between _add_days (current_date, -90) and current_date </filterExpression></detailFilter></detailFilters><memberSetStructure/><queryHints><autoSort value="all"/></queryHints></query><query name="Pts on medication (not used as only fetches brand names)">
+			<source>
+				<model/>
+			</source>
+			<selection><dataItem name="Prescription Name" aggregate="none" rollupAggregate="none"><expression>[Current Medication].[Current Medication].[Prescription Name]</expression></dataItem><dataItem name="Patient ID" aggregate="none" rollupAggregate="none"><expression>[Current Medication].[Current Medication].[Patient ID]</expression></dataItem></selection>
+		<detailFilters><detailFilter use="required" postAutoAggregation="false"><filterExpression>lower([Prescription Name]) in ('coumadin','warfarin')</filterExpression></detailFilter></detailFilters></query></queries></report>
