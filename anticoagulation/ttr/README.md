@@ -4,7 +4,7 @@ Purpose of this report
 -----------------
 This report exports the data to be used at https://public.opencpu.org/ocpu/github/anticoagulation/warfarin/www/ in order to calculate the time in therapeutic range as described by Rosendaal ( PMID [8470047](http://pubmed.gov/8470047) ). This allows benchmarking the quality of your anticoagulation against best practice. 
 
-The mean TTR in randomized control trials is 56% ( PMID [23049730](http://pubmed.gov/23049730) )
+The mean TTR in randomized control trials is 56% ( PMID [23049730](http://pubmed.gov/23049730) ) Lower numbers increase the risk of both mortality and bleeding (PMID [17296878](http://pubmed.gov/17296878)) without clear benefit from warfarin (PMID [18955670](http://pubmed.gov/18955670)).
 
 Using this report
 -----------------
