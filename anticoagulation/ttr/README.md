@@ -12,6 +12,10 @@ The report currently has filters for the first query, "Patients from selected si
 
 After exporting this report, you may need to remove '>' symbols or other non-numeric characters from your INR values.
 
+Bug
+-----------------
+Join for excluding patients with valvular disease who need INRs is not working. Thus, results may be inaccurate for patient populations with many valvular patients. Please see [related issue](https://github.com/ecwusers/xml/issues/2). 
+
 Questions
 -----------------
 Ask questions by 'Creating an issue' by clicking the encircled exxlamation mark icon to the right of this page.
